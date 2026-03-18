@@ -1,32 +1,55 @@
 <template>
   <div>
     <div class="page-header">
-      <h2>测评场景</h2>
-      <span class="subtitle">各测评维度的详细说明</span>
+      <h2>🎯 测评场景</h2>
+      <span class="subtitle">各测评维度的详细说明与实时对比</span>
     </div>
 
-    <el-row :gutter="24">
+    <el-row :gutter="20">
       <el-col :span="12" v-for="b in mockBenchmarks" :key="b.id">
         <el-card class="benchmark-card" shadow="hover">
           <template #header>
-            <span class="benchmark-name">{{ b.name }}</span>
+            <div class="card-header">
+              <span class="benchmark-name">{{ b.name }}</span>
+              <el-tag type="primary" size="small">{{ b.metrics.length }} 项指标</el-tag>
+            </div>
           </template>
+          
           <p class="benchmark-desc">{{ b.description }}</p>
+          
           <div class="metrics">
-            <span class="metrics-label">评测指标：</span>
-            <el-tag v-for="m in b.metrics" :key="m" size="small" style="margin-right: 6px">{{ m }}</el-tag>
+            <span class="metrics-label">评测指标</span>
+            <div class="metrics-tags">
+              <el-tag 
+                v-for="m in b.metrics" 
+                :key="m" 
+                size="small" 
+                effect="plain"
+                type="info"
+              >
+                {{ m }}
+              </el-tag>
+            </div>
           </div>
+
           <el-divider />
-          <div class="scores-preview">
-            <div v-for="entry in mockLeaderboard" :key="entry.agent.id" class="score-row">
-              <span class="agent-name">{{ entry.agent.name }}</span>
-              <el-progress
-                :percentage="getScore(entry, b.id)"
-                :color="scoreColor(getScore(entry, b.id))"
-                :stroke-width="8"
-                style="flex: 1; margin: 0 12px"
-              />
-              <span class="score-val">{{ getScore(entry, b.id) }}</span>
+
+          <div class="scores-section">
+            <div class="section-title">各框架得分</div>
+            <div class="scores-preview">
+              <div v-for="entry in mockLeaderboard" :key="entry.agent.id" class="score-row">
+                <div class="score-left">
+                  <span class="agent-name">{{ entry.agent.name }}</span>
+                  <span class="score-val">{{ getScore(entry, b.id) }}</span>
+                </div>
+                <el-progress
+                  :percentage="getScore(entry, b.id)"
+                  :color="scoreColor(getScore(entry, b.id))"
+                  :stroke-width="10"
+                  :show-text="false"
+                  class="score-bar"
+                />
+              </div>
             </div>
           </div>
         </el-card>
@@ -52,15 +75,91 @@ function scoreColor(score: number): string {
 </script>
 
 <style scoped>
-.page-header { margin-bottom: 24px; }
-.page-header h2 { margin: 0 0 4px; font-size: 24px; }
-.subtitle { color: #909399; font-size: 14px; }
-.benchmark-card { margin-bottom: 24px; }
-.benchmark-name { font-weight: 700; font-size: 16px; }
-.benchmark-desc { color: #606266; margin: 0 0 12px; }
-.metrics { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
-.metrics-label { color: #909399; font-size: 13px; margin-right: 4px; }
-.score-row { display: flex; align-items: center; margin-bottom: 10px; }
-.agent-name { width: 90px; font-size: 13px; font-weight: 600; }
-.score-val { width: 30px; text-align: right; font-size: 13px; font-weight: 700; }
+.page-header { 
+  margin-bottom: 24px;
+  padding: 24px;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  border-radius: 12px;
+  color: white;
+}
+.page-header h2 { 
+  margin: 0 0 8px; 
+  font-size: 28px; 
+  font-weight: 700;
+}
+.subtitle { 
+  font-size: 14px; 
+  opacity: 0.9;
+}
+.benchmark-card { 
+  margin-bottom: 20px;
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+.benchmark-card:hover {
+  transform: translateY(-4px);
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.benchmark-name { 
+  font-weight: 700; 
+  font-size: 17px;
+}
+.benchmark-desc { 
+  color: #606266; 
+  margin: 0 0 16px;
+  line-height: 1.6;
+}
+.metrics { 
+  margin-bottom: 12px;
+}
+.metrics-label { 
+  display: block;
+  color: #909399; 
+  font-size: 13px; 
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.metrics-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.scores-section {
+  margin-top: 8px;
+}
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #606266;
+  margin-bottom: 12px;
+}
+.score-row { 
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+.score-left {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 140px;
+}
+.agent-name { 
+  font-size: 14px; 
+  font-weight: 600;
+  color: #303133;
+}
+.score-val { 
+  font-size: 16px; 
+  font-weight: 700;
+  color: #409eff;
+}
+.score-bar {
+  flex: 1;
+}
 </style>
